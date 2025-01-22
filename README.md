@@ -37,8 +37,8 @@ project/
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/pdf-server.git
-cd pdf-server
+git clone https://github.com/C2DH/pdf-streamer.git
+cd pdf-streamer
 ```
 
 Install dependencies:
