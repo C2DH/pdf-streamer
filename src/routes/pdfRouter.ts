@@ -24,6 +24,7 @@ router.get('/', checkDevMode, (req: Request, res: Response) => {
     return
   }
   try {
+    const baseUrl = process.env.BASE_URL || ''
     const projects = fs
       .readdirSync(projectBaseDir)
       .filter((file) =>
@@ -33,7 +34,10 @@ router.get('/', checkDevMode, (req: Request, res: Response) => {
         const files = fs
           .readdirSync(path.join(projectBaseDir, project))
           .filter((file) => file.endsWith('.pdf'))
-          .map((file) => ({ name: file, url: `/pdf/${project}/${file}` }))
+          .map((file) => ({
+            name: file,
+            url: `${baseUrl}/pdf/${project}/${file}`,
+          }))
         return { project, files }
       })
     res.status(200).json({ projects })
