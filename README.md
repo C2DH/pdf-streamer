@@ -31,3 +31,44 @@ project/
 │       └── fileUtils.ts  # Helper functions for file operations
 └── projects/             # Directory containing project files (e.g., PDFs)
 ```
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/pdf-server.git
+cd pdf-server
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Create a .env file in the root directory with the following:
+
+```bash
+PDF_BASE_DIR=./data
+PORT=3000
+NODE_ENV=production
+```
+
+Ensure the projects folder exists and contains your PDF files.
+Use `NODE_ENV=development` for development use.
+
+## API Endpoints
+
+| Method | Endpoint                  | Description                                                                       |
+| ------ | ------------------------- | --------------------------------------------------------------------------------- |
+| GET    | /pdf/:projectId/:fileName | Serve a specific PDF file.                                                        |
+| GET    | /pdf/                     | List all projects and all files in the directory (NODE_ENV=development **only**). |
+
+## Environment Variables
+
+| Variable     | Description                                           | Default    |
+| ------------ | ----------------------------------------------------- | ---------- |
+| PORT         | The port on which the server runs.                    | 3000       |
+| PDF_BASE_DIR | Path to the folder containing project files.          | ./data     |
+| NODE_ENV     | Set the environment mode (development or production). | production |

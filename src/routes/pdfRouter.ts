@@ -18,16 +18,25 @@ const checkDevMode = (req: Request, res: Response, next: Function) => {
 
 // Route to list all filenames in the folder
 router.get('/', checkDevMode, (req: Request, res: Response) => {
-  const projectBaseDir = process.env.PROJECT_BASE_DIR
+  const projectBaseDir = process.env.PDF_BASE_DIR
   if (!projectBaseDir) {
-    res.status(500).json({ error: 'PROJECT_BASE_DIR is not set.' })
+    res.status(500).json({ error: 'PDF_BASE_DIR is not set.' })
     return
   }
   try {
-    const files = fs
+    const projects = fs
       .readdirSync(projectBaseDir)
-      .filter((file) => fs.statSync(path.join(projectBaseDir, file)).isFile())
-    res.status(200).json({ files })
+      .filter((file) =>
+        fs.statSync(path.join(projectBaseDir, file)).isDirectory()
+      )
+      .map((project) => {
+        const files = fs
+          .readdirSync(path.join(projectBaseDir, project))
+          .filter((file) => file.endsWith('.pdf'))
+          .map((file) => ({ name: file, url: `/pdf/${project}/${file}` }))
+        return { project, files }
+      })
+    res.status(200).json({ projects })
   } catch (err) {
     console.error('Error reading directory:', err)
     res.status(500).json({ error: 'Failed to read the directory.' })
@@ -35,9 +44,9 @@ router.get('/', checkDevMode, (req: Request, res: Response) => {
 })
 
 router.get('/:projectId/:fileName', (req: Request, res: Response): void => {
-  const projectBaseDir = process.env.PROJECT_BASE_DIR
+  const projectBaseDir = process.env.PDF_BASE_DIR
   if (!projectBaseDir) {
-    res.status(500).json({ error: 'PROJECT_BASE_DIR is not set.' })
+    res.status(500).json({ error: 'PDF_BASE_DIR is not set.' })
     return
   }
   const { projectId, fileName } = req.params
