@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${PORT}:3000'
+    env_file:
+      - .env
+    volumes:
+      - ./projects:/usr/src/app/projects

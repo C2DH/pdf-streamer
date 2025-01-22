@@ -1,0 +1,31 @@
+{
+  "name": "pdf-streamer",
+  "version": "1.0.0",
+  "description": "Quick solution to handle huge PDFs",
+  "main": "dist/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/app.js",
+    "dev": "ts-node-dev --respawn src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C2DH/pdf-streamer.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/C2DH/pdf-streamer/issues"
+  },
+  "homepage": "https://github.com/C2DH/pdf-streamer#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}
