@@ -1,5 +1,5 @@
 # Use the official Node.js LTS image
-FROM node:18-alpine
+FROM node:23-alpine AS build
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --only=production
+RUN npm install
 
 # Copy the source code
 COPY . .

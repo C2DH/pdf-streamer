@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import { getFilePath } from '../utils/fileUtils'
+import { listFiles } from '../db'
 
 const router = Router()
 
@@ -19,28 +20,26 @@ const checkDevMode = (req: Request, res: Response, next: Function) => {
 // Route to list all filenames in the folder
 router.get('/', checkDevMode, (req: Request, res: Response) => {
   const projectBaseDir = process.env.PDF_BASE_DIR
+  const projectBaseUrl = process.env.BASE_URL || 'http://localhost:3000'
   if (!projectBaseDir) {
     res.status(500).json({ error: 'PDF_BASE_DIR is not set.' })
     return
   }
+  const offset = parseInt(req.query.offset as string, 10) || 0
+  const limit = parseInt(req.query.limit as string, 10) || 10
+
   try {
-    const baseUrl = process.env.BASE_URL || ''
-    const projects = fs
-      .readdirSync(projectBaseDir)
-      .filter((file) =>
-        fs.statSync(path.join(projectBaseDir, file)).isDirectory()
-      )
-      .map((project) => {
-        const files = fs
-          .readdirSync(path.join(projectBaseDir, project))
-          .filter((file) => file.endsWith('.pdf'))
-          .map((file) => ({
-            name: file,
-            url: `${baseUrl}/pdf/${project}/${file}`,
-          }))
-        return { project, files }
-      })
-    res.status(200).json({ projects })
+    const records = listFiles({
+      offset,
+      limit,
+    }).map((record) => ({
+      name: record.fileName,
+
+      url: `${projectBaseUrl}/pdf/${record.projectId}/${record.fileName}`,
+    }))
+    res.json({
+      files: records,
+    })
   } catch (err) {
     console.error('Error reading directory:', err)
     res.status(500).json({ error: 'Failed to read the directory.' })
