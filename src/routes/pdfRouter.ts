@@ -41,6 +41,11 @@ router.get('/', (req: Request, res: Response) => {
       offset,
       limit,
       total,
+      verbose: {
+        buildDate: process.env.BUILD_DATE || 'N/A',
+        commitHash: process.env.COMMIT_HASH || 'N/A',
+        version: process.env.VERSION || 'N/A',
+      },
     })
   } catch (err) {
     console.error('Error reading directory:', err)

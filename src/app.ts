@@ -31,6 +31,7 @@ console.log()
 console.log(coloredText)
 console.log()
 console.log(chalk.bold('Starting server...'))
+console.log('  process.env.BASE_URL:', chalk.bold.green(process.env.BASE_URL))
 // print out safe variables
 console.log(
   '  process.env.PDF_BASE_DIR:',
@@ -49,13 +50,7 @@ console.log('  process.env.VERSION:', chalk.bold.green(process.env.VERSION))
 initializeDb()
 // Use the PDF route
 app.use('/pdf', pdfRouter)
-app.use('/', (_req, res) => {
-  res.send({
-    buildDate: process.env.BUILD_DATE || 'N/A',
-    commitHash: process.env.COMMIT_HASH || 'N/A',
-    version: process.env.VERSION || 'N/A',
-  })
-})
+
 // Start the server
 app.listen(Port, () => {
   console.log(
