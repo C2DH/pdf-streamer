@@ -31,6 +31,10 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            COMMIT_HASH=${GITHUB_SHA}
+            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            VERSION=latest
           tags: |
             c2dhunilu/pdf-streamer:latest
           platforms: linux/amd64,linux/arm64
