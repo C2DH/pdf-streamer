@@ -62,7 +62,7 @@ export const initializeDb = () => {
       const files = fs.readdirSync(projectPath)
       for (const fileName of files) {
         console.log(
-          '  - adding gile:',
+          '  - adding file:',
           chalk.bold(`${projectPath}/${fileName}`)
         )
         if (fileName.endsWith('.pdf')) {
@@ -88,14 +88,28 @@ export const initializeDb = () => {
   console.log()
 }
 
-export const findFile = (projectId: string, fileName: string) => {
+/**
+ * Retrieves the file path for a given project and file name from the database.
+ *
+ * @param projectId - The unique identifier of the project.
+ * @param fileName - The name of the file.
+ * @returns The file path of the specified file within the project.
+ */
+export const getFile = (
+  projectId: string,
+  fileName: string
+):
+  | {
+      filePath: string
+    }
+  | undefined => {
   return db
     .prepare(
       `
   SELECT filePath FROM files WHERE projectId = ? AND fileName = ?
 `
     )
-    .get(projectId, fileName)
+    .get(projectId, fileName) as { filePath: string }
 }
 
 /**
@@ -127,4 +141,23 @@ export const listFiles = (
 `
     )
     .all(limit, offset) as Array<{ projectId: string; fileName: string }>
+}
+/**
+ * Counts the total number of files in the database.
+ *
+ * @returns {number} The total count of files.
+ *
+ * @example
+ * // Get the total number of files
+ * const totalFiles = countAllFiles();
+ */
+export const countAllFiles = (): number => {
+  const result = db
+    .prepare(
+      `
+  SELECT COUNT(*) as count FROM files
+`
+    )
+    .get() as { count: number }
+  return result.count
 }
