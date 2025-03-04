@@ -133,3 +133,7 @@ dist
 # data contents exept .gitkeep file
 data/*
 !data/.gitkeep
+pdfs.db-shm
+pdfs.db-shm
+pdfs.db-wal
+pdfs.db

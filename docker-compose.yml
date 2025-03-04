@@ -3,9 +3,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COMMIT_HASH: test
+        BUILD_DATE: 2025-03-04
     ports:
       - '${PORT}:3000'
     env_file:
       - .env
     volumes:
-      - ./projects:/usr/src/app/projects
+      - ./data:/usr/src/data
+    environment:
+      - VERSION=${VERSION:-preview}
+      - PDF_BASE_DIR=/usr/src/data
+      - NODE_ENV=production
