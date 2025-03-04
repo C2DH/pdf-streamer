@@ -26,15 +26,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set environment variables
+        run: |
+          echo "COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "latest")
+          echo "VERSION=$TAG" >> $GITHUB_ENV
       - name: Build and push multi-platform image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           build-args: |
-            COMMIT_HASH=${GITHUB_SHA}
-            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            VERSION=latest
+            COMMIT_HASH=${{ env.COMMIT_HASH }}
+            BUILD_DATE=${{ env.BUILD_DATE }}
+            VERSION=${{ env.VERSION }}
           tags: |
             c2dhunilu/pdf-streamer:latest
           platforms: linux/amd64,linux/arm64
