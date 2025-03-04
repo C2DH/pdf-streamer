@@ -1,24 +1,22 @@
 import { Router, Request, Response } from 'express'
 import fs from 'fs'
-import path from 'path'
-import { getFilePath } from '../utils/fileUtils'
-import { listFiles } from '../db'
+import { countAllFiles, getFile, listFiles } from '../db'
 
 const router = Router()
 
 // Middleware to restrict access to development mode
-const checkDevMode = (req: Request, res: Response, next: Function) => {
-  if (process.env.NODE_ENV !== 'development') {
-    res
-      .status(403)
-      .json({ error: 'This route is only available in development mode.' })
-    return
-  }
-  next()
-}
+// const checkDevMode = (req: Request, res: Response, next: Function) => {
+//   if (process.env.NODE_ENV !== 'development') {
+//     res
+//       .status(403)
+//       .json({ error: 'This route is only available in development mode.' })
+//     return
+//   }
+//   next()
+// }
 
 // Route to list all filenames in the folder
-router.get('/', checkDevMode, (req: Request, res: Response) => {
+router.get('/', (req: Request, res: Response) => {
   const projectBaseDir = process.env.PDF_BASE_DIR
   const projectBaseUrl = process.env.BASE_URL || 'http://localhost:3000'
   if (!projectBaseDir) {
@@ -37,8 +35,12 @@ router.get('/', checkDevMode, (req: Request, res: Response) => {
 
       url: `${projectBaseUrl}/pdf/${record.projectId}/${record.fileName}`,
     }))
+    const total = countAllFiles()
     res.json({
-      files: records,
+      data: records,
+      offset,
+      limit,
+      total,
     })
   } catch (err) {
     console.error('Error reading directory:', err)
@@ -54,16 +56,13 @@ router.get('/:projectId/:fileName', (req: Request, res: Response): void => {
   }
   const { projectId, fileName } = req.params
 
-  /**
-   * Constructs the full file path for a given project and file name.
-   *
-   * @param {string} projectBaseDir - The base directory of the project.
-   * @param {string} projectId - The unique identifier of the project.
-   * @param {string} fileName - The name of the file.
-   * @returns {string} The full file path.
-   */
-  const filePath = getFilePath(projectBaseDir, projectId, fileName)
-
+  const file = getFile(projectId, fileName)
+  if (!file) {
+    res.status(404).send('File not found')
+    return
+  }
+  const filePath = file.filePath
+  console.log('filePath:', filePath)
   if (!fs.existsSync(filePath)) {
     res.status(404).send('File not found')
     return
