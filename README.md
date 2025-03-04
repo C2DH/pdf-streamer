@@ -58,6 +58,16 @@ NODE_ENV=production
 Ensure the projects folder exists and contains your PDF files.
 Use `NODE_ENV=development` for development use.
 
+```bash
+npm run dev
+```
+
+## Test docker image
+
+```bash
+docker compose up --build
+```
+
 ## API Endpoints
 
 | Method | Endpoint                  | Description                                                                       |
