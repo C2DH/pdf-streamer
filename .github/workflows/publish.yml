@@ -3,7 +3,7 @@ name: Build and Push Multi-Platform Docker Image
 on:
   push:
     branches:
-      - main # Adjust if needed
+      - master # Adjust if needed
   workflow_dispatch: # Allows manual trigger
 
 jobs:
